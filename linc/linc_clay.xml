@@ -1,0 +1,20 @@
+<xml>
+    <files id="linc-clay-depends">
+        <file name='${LINC_CLAY_PATH}linc/clay.h' />
+        <file name='${LINC_CLAY_PATH}linc/linc_clay.h' />
+    </files>
+
+    <files id="haxe">
+        <cache value="1" />
+        <depend files="linc-clay-depends" />
+        <compilerflag value='-I${LINC_CLAY_PATH}linc/'/>
+        <file name='${LINC_CLAY_PATH}linc/linc_clay.cpp' />
+    </files>
+
+    <section if="windows">
+        <compiler exe="cl.exe" id="MSVC">
+            <flag value="/Zc:__cplusplus"/>
+            <flag value="/std:c++20"/> <!-- we need cpp20 for this lib! -->
+        </compiler>
+    </section>
+</xml>
