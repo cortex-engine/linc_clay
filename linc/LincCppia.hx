@@ -62,6 +62,11 @@ class LincCppia {
         // trace(ptrType);
 
         switch ptrType {
+            case 'Star': return {
+                    linkClass: null,
+                    linkType: 'voidptr',
+                    linkPtrType: null
+                };
         	case 'ConstCharStar':
         		return {
 	                linkClass: null,
@@ -72,6 +77,8 @@ class LincCppia {
 
         function getLink(_class:MacroTypeClass) {
             var classMeta = _class.meta;
+
+            trace(_class);
 
             // fail if we are lacking the metadata
             if (classMeta.has(':lincCppiaIgnore'))
@@ -163,11 +170,12 @@ class LincCppia {
         for (f in clsImpl.fields.get()) {
             // trace(f);
 
+            var isAbstract = false;
             var propName = f.name;
             var propTypeOriginal = f.type.toComplexType();
             var propType = f.type.toComplexType();
             var propTypeName = switch f.type {
-                case TAbstract(_t, _): _t.get().name;
+                case TAbstract(_t, _): isAbstract = true; _t.get().name;
                 case TType(_t, _): _t.get().name;
                 case TInst(_t, _): _t.get().name;
                 default: "";
@@ -186,9 +194,26 @@ class LincCppia {
             if (skip)
                 continue;
 
+            // trace(propTypeName);
+
+            if (isAbstract && !propTypeName.contains("Star"))
+                f.type = Context.followWithAbstracts(f.type);
+
             var def = getCppiaLinkDef(f.type);
+
+            // trace(def);
+
             if (def != null) {
                 switch (def.linkType) {
+                    case 'voidptr': {
+                        propType = macro : cpp.Pointer<cpp.Void>;
+                        getBody = macro return __ptr != null ? (cast __ptr.ref.$propName: cpp.Pointer<cpp.Void>) : (cast __inst.$propName: cpp.Pointer<cpp.Void>);
+                        setBody = macro {
+                            if (__ptr != null) __ptr.ref.$propName = (cast _v: $propTypeOriginal);
+                            else __inst.$propName = (cast _v: $propTypeOriginal);
+                            return _v;
+                        };
+                    }
                 	case 'dynamic': {
                         propType = macro : Dynamic;
                         getBody = macro return __ptr != null ? (cast __ptr.ref.$propName: Dynamic) : (cast __inst.$propName: Dynamic);
@@ -350,7 +375,8 @@ class LincCppia {
 
                                 // lookup the class
                                 var tmp = moduleMap.get(argType.name);
-                                if (tmp != null) {
+                                var def = tmp != null ? getCppiaLinkDef(tmp) : null;
+                                if (tmp != null && def != null) {
                                     var def = getCppiaLinkDef(tmp);
                                     argTp = moduleMap.get(def.linkClass).toComplexType();
                                     args.push({name:argName, type:argTp});
