@@ -47,7 +47,7 @@ class LincCppia {
             case TInst(_t, _p):
                 if (_t.get().name.contains("Star"))
                     _t.get().name;
-                else if (_t.get().name.contains("Array"))
+                else if (_t.get().name == "Array")
                 	return null;
                 else
                     null;
@@ -78,7 +78,7 @@ class LincCppia {
         function getLink(_class:MacroTypeClass) {
             var classMeta = _class.meta;
 
-            trace(_class);
+            // trace(_class);
 
             // fail if we are lacking the metadata
             if (classMeta.has(':lincCppiaIgnore'))
@@ -138,7 +138,7 @@ class LincCppia {
         return fields;
     }
 
-    macro public static function wrapStructExtern(_implementation:String):Array<Field> {
+    macro public static function wrapStructExtern(_implementation:String, ?_useStructType:Bool = false):Array<Field> {
         // build a wrapper class around a native struct
         var pos = Context.currentPos();
         var cls = Context.getLocalClass();
@@ -151,17 +151,23 @@ class LincCppia {
 
         var cname = clsImpl.name;
         var ctPath = moduleMap.get(cname).toComplexType();
+        // trace(ctPath);
         var typePath:TypePath = switch ctPath {
             case TPath(_p): _p;
             default: null;
         };
+
+        // if (_useStructType)
+        //     ctPath = TPath({sub: typePath.sub+"Struct", params: typePath.params, pack: typePath.pack, name: typePath.name});
+
 
         var newFields = (macro class {
             public function new() {}
 
             public var __ptr:cpp.Pointer<$ctPath> = null;
             @:allow($v{modulePath})
-            public var __inst:$ctPath = new $typePath();
+            public var __inst:cpp.Struct<$ctPath> = new $typePath();
+            // public var __inst:$ctPath = new $typePath();
 
         }).fields;
 
@@ -202,7 +208,7 @@ class LincCppia {
             var def = getCppiaLinkDef(f.type);
 
             // trace(def);
-
+            var makeRef = false;
             if (def != null) {
                 switch (def.linkType) {
                     case 'voidptr': {
@@ -273,6 +279,7 @@ class LincCppia {
                                 res.__inst = __inst.$propName;
                                 return res;
                             }
+                            makeRef = true;
                         }                        
                     }
                 }
@@ -289,8 +296,6 @@ class LincCppia {
                     $getBody;
                 }
             };
-
-
 
             newFields = newFields.concat(cls.fields);
         }

@@ -5,12 +5,22 @@ package clay;
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_String")
 @:lincCppiaDef('HxClay_String', 'struct')
 extern class Native_Clay_String {
     public function new();
+    
+    inline public static function create():Native_Clay_String return untyped __cpp__('{}');
     public var length:Int;
     public var chars:cpp.ConstCharStar;
+
+    inline public static function fromString(_str:String) {
+        var res:Native_Clay_String = new Native_Clay_String();
+        res.length = _str.length;
+        res.chars = cast untyped __cpp__('{0}.c_str()', _str);
+        return res;
+    }
 }
 #if (scriptable || cppia)
     @:build(linc.LincCppia.wrapStructExtern('Native_Clay_String'))
@@ -23,6 +33,7 @@ extern class Native_Clay_String {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_StringSlice")
 @:lincCppiaDef('HxClay_StringSlice', 'struct')
 extern class Native_Clay_StringSlice {
@@ -61,6 +72,7 @@ extern class Native_Clay_Context {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_Arena")
 @:lincCppiaDef('HxClay_Arena', 'struct')
 extern class Native_Clay_Arena {
@@ -78,6 +90,7 @@ extern class Native_Clay_Arena {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_Dimensions")
 @:lincCppiaDef('HxClay_Dimensions', 'struct')
 extern class Native_Clay_Dimensions {
@@ -99,6 +112,7 @@ extern class Native_Clay_Dimensions {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_Vector2")
 @:lincCppiaDef('HxClay_Vector2', 'struct')
 extern class Native_Clay_Vector2 {
@@ -120,6 +134,7 @@ extern class Native_Clay_Vector2 {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_Color")
 @:lincCppiaDef('HxClay_Color', 'struct')
 extern class Native_Clay_Color {
@@ -143,6 +158,7 @@ extern class Native_Clay_Color {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_BoundingBox")
 @:lincCppiaDef('HxClay_BoundingBox', 'struct')
 extern class Native_Clay_BoundingBox {
@@ -166,6 +182,7 @@ extern class Native_Clay_BoundingBox {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_ElementId")
 @:lincCppiaDef('HxClay_ElementId', 'struct')
 extern class Native_Clay_ElementId {
@@ -189,6 +206,7 @@ extern class Native_Clay_ElementId {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_CornerRadius")
 @:lincCppiaDef('HxClay_CornerRadius', 'struct')
 extern class Native_Clay_CornerRadius {
@@ -304,6 +322,7 @@ extern class Native_Clay__SizingTypeImpl { }
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_ChildAlignment")
 @:lincCppiaDef('HxClay_ChildAlignment', 'struct')
 extern class Native_Clay_ChildAlignment {
@@ -325,6 +344,7 @@ extern class Native_Clay_ChildAlignment {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_SizingMinMax")
 @:lincCppiaDef('HxClay_SizingMinMax', 'struct')
 extern class Native_Clay_SizingMinMax {
@@ -346,18 +366,33 @@ extern class Native_Clay_SizingMinMax {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_SizingAxis")
 @:lincCppiaDef('HxClay_SizingAxis', 'struct')
 extern class Native_Clay_SizingAxis {
     public function new();
     // TODO:
-    // public var minMax:Native_Clay_SizingMinMax;
-    // public var percent:cpp.Float32;
+    // @:lincCppiaIgnore
+    // inline public function minMax():Native_Clay_SizingMinMax
+    //     return untyped __cpp__('{0}.size.minMax', this);
+    // @:lincCppiaIgnore
+    // inline public function percent():Float
+    //     return untyped __cpp__('{0}.size.percent', this);
+
+    @:native('size.minMax')
+    public var minMax:Native_Clay_SizingMinMax;
+
+    @:native('size.percent')
+    public var percent:cpp.Float32;
+
+
     public var type:Native_Clay__SizingType;
 }
 #if (scriptable || cppia)
     @:build(linc.LincCppia.wrapStructExtern('Native_Clay_SizingAxis'))
-    class HxClay_SizingAxis {}
+    class HxClay_SizingAxis {
+        // public function percent():Float return this.__inst.percent();
+    }
 #else
     typedef HxClay_SizingAxis = Native_Clay_SizingAxis;
 #end
@@ -366,6 +401,7 @@ extern class Native_Clay_SizingAxis {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_Sizing")
 @:lincCppiaDef('HxClay_Sizing', 'struct')
 extern class Native_Clay_Sizing {
@@ -387,6 +423,7 @@ extern class Native_Clay_Sizing {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_Padding")
 @:lincCppiaDef('HxClay_Padding', 'struct')
 extern class Native_Clay_Padding {
@@ -410,6 +447,7 @@ extern class Native_Clay_Padding {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_LayoutConfig")
 @:lincCppiaDef('HxClay_LayoutConfig', 'struct')
 extern class Native_Clay_LayoutConfig {
@@ -480,6 +518,7 @@ extern class Native_Clay_TextAlignmentImpl { }
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_TextElementConfig")
 @:lincCppiaDef('HxClay_TextElementConfig', 'struct')
 extern class Native_Clay_TextElementConfig {
@@ -504,6 +543,7 @@ extern class Native_Clay_TextElementConfig {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_ImageElementConfig")
 @:lincCppiaDef('HxClay_ImageElementConfig', 'struct')
 extern class Native_Clay_ImageElementConfig {
@@ -563,6 +603,7 @@ extern class Native_Clay_FloatingAttachPointTypeImpl { }
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_FloatingAttachPoints")
 @:lincCppiaDef('HxClay_FloatingAttachPoints', 'struct')
 extern class Native_Clay_FloatingAttachPoints {
@@ -627,6 +668,7 @@ extern class Native_Clay_FloatingAttachToElementImpl { }
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_FloatingElementConfig")
 @:lincCppiaDef('HxClay_FloatingElementConfig', 'struct')
 extern class Native_Clay_FloatingElementConfig {
@@ -650,6 +692,7 @@ extern class Native_Clay_FloatingElementConfig {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_ScrollElementConfig")
 @:lincCppiaDef('HxClay_ScrollElementConfig', 'struct')
 extern class Native_Clay_ScrollElementConfig {
@@ -671,6 +714,7 @@ extern class Native_Clay_ScrollElementConfig {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_BorderWidth")
 @:lincCppiaDef('HxClay_BorderWidth', 'struct')
 extern class Native_Clay_BorderWidth {
@@ -694,6 +738,7 @@ extern class Native_Clay_BorderWidth {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_BorderElementConfig")
 @:lincCppiaDef('HxClay_BorderElementConfig', 'struct')
 extern class Native_Clay_BorderElementConfig {
@@ -708,43 +753,133 @@ extern class Native_Clay_BorderElementConfig {
     typedef HxClay_BorderElementConfig = Native_Clay_BorderElementConfig;
 #end
 
-
-
-
-
-
-
-
-
-
-
-
+///////////////////////////////////////////////////////////
+// Render Command Data
 ///////////////////////////////////////////////////////////
 
-
-
-
-
-
+//
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
+@:native("Clay_TextRenderData")
+@:lincCppiaDef('HxClay_TextRenderData', 'struct')
+extern class Native_Clay_TextRenderData {
+    public function new();
+    public var stringContents:Native_Clay_StringSlice;
+    public var textColor:Native_Clay_Color;
+    public var fontId:cpp.UInt16;
+    public var fontSize:cpp.UInt16;
+    public var letterSpacing:cpp.UInt16;
+    public var lineHeight:cpp.UInt16;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_TextRenderData'))
+    class HxClay_TextRenderData {}
+#else
+    typedef HxClay_TextRenderData = Native_Clay_TextRenderData;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_RectangleRenderData")
+@:lincCppiaDef('HxClay_RectangleRenderData', 'struct')
+extern class Native_Clay_RectangleRenderData {
+    public function new();
+    public var backgroundColor:Native_Clay_Color;
+    public var cornerRadius:Native_Clay_CornerRadius;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_RectangleRenderData'))
+    class HxClay_RectangleRenderData {}
+#else
+    typedef HxClay_RectangleRenderData = Native_Clay_RectangleRenderData;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_ImageRenderData")
+@:lincCppiaDef('HxClay_ImageRenderData', 'struct')
+extern class Native_Clay_ImageRenderData {
+    public function new();
+    public var backgroundColor:Native_Clay_Color;
+    public var cornerRadius:Native_Clay_CornerRadius;
+    public var sourceDimensions:Native_Clay_Dimensions;
+    public var imageData:cpp.Star<cpp.Void>;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_ImageRenderData'))
+    class HxClay_ImageRenderData {}
+#else
+    typedef HxClay_ImageRenderData = Native_Clay_ImageRenderData;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_ScrollRenderData")
+@:lincCppiaDef('HxClay_ScrollRenderData', 'struct')
+extern class Native_Clay_ScrollRenderData {
+    public function new();
+    public var horizontal:Bool;
+    public var vertical:Bool;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_ScrollRenderData'))
+    class HxClay_ScrollRenderData {}
+#else
+    typedef HxClay_ScrollRenderData = Native_Clay_ScrollRenderData;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_BorderRenderData")
+@:lincCppiaDef('HxClay_BorderRenderData', 'struct')
+extern class Native_Clay_BorderRenderData {
+    public function new();
+    public var color:Native_Clay_Color;
+    public var cornerRadius:Native_Clay_CornerRadius;
+    public var width:Native_Clay_BorderWidth;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_BorderRenderData'))
+    class HxClay_BorderRenderData {}
+#else
+    typedef HxClay_BorderRenderData = Native_Clay_BorderRenderData;
+#end
+
+///////////////////////////////////////////////////////////
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
 @:native("Clay_RenderData")
 @:lincCppiaDef('HxClay_RenderData', 'struct')
 extern class Native_Clay_RenderData {
     public function new();
     // Render command data when commandType == CLAY_RENDER_COMMAND_TYPE_RECTANGLE
-    // public var rectangle:Native_Clay_RectangleRenderData;
+    public var rectangle:Native_Clay_RectangleRenderData;
     // Render command data when commandType == CLAY_RENDER_COMMAND_TYPE_TEXT
-    // public var text:Native_Clay_TextRenderData;
+    public var text:Native_Clay_TextRenderData;
     // Render command data when commandType == CLAY_RENDER_COMMAND_TYPE_IMAGE
-    // public var image:Native_Clay_ImageRenderData;
+    public var image:Native_Clay_ImageRenderData;
     // Render command data when commandType == CLAY_RENDER_COMMAND_TYPE_CUSTOM
     // public var custom:Native_Clay_CustomRenderData;
     // Render command data when commandType == CLAY_RENDER_COMMAND_TYPE_BORDER
-    // public var border:Native_Clay_BorderRenderData;
+    public var border:Native_Clay_BorderRenderData;
     // Render command data when commandType == CLAY_RENDER_COMMAND_TYPE_SCROLL
-    // public var scroll:Native_Clay_ScrollRenderData;
+    public var scroll:Native_Clay_ScrollRenderData;
 }
 #if (scriptable || cppia)
     @:build(linc.LincCppia.wrapStructExtern('Native_Clay_RenderData'))
@@ -753,9 +888,197 @@ extern class Native_Clay_RenderData {
     typedef HxClay_RenderData = Native_Clay_RenderData;
 #end
 
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_ScrollContainerData")
+@:lincCppiaDef('HxClay_ScrollContainerData', 'struct')
+extern class Native_Clay_ScrollContainerData {
+    public function new();
+    public var scrollPosition:cpp.Star<Native_Clay_Vector2>;
+    public var scrollContainerDimensions:Native_Clay_Dimensions;
+    public var contentDimensions:Native_Clay_Dimensions;
+    public var config:Native_Clay_ScrollElementConfig;
+    public var found:Bool;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_ScrollContainerData'))
+    class HxClay_ScrollContainerData {}
+#else
+    typedef HxClay_ScrollContainerData = Native_Clay_ScrollContainerData;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_ElementData")
+@:lincCppiaDef('HxClay_ElementData', 'struct')
+extern class Native_Clay_ElementData {
+    public function new();
+    public var boundingBox:Native_Clay_BoundingBox;
+    public var found:Bool;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_ElementData'))
+    class HxClay_ElementData {}
+#else
+    typedef HxClay_ElementData = Native_Clay_ElementData;
+#end
+
+//
+@:unreflective
+extern enum abstract Native_Clay_RenderCommandType(Native_Clay_RenderCommandTypeImpl) {
+    @:native("Clay_RenderCommandType::CLAY_RENDER_COMMAND_TYPE_NONE")
+    var CLAY_RENDER_COMMAND_TYPE_NONE;
+    
+    @:native("Clay_RenderCommandType::CLAY_RENDER_COMMAND_TYPE_RECTANGLE")
+    var CLAY_RENDER_COMMAND_TYPE_RECTANGLE;
+
+    @:native("Clay_RenderCommandType::CLAY_RENDER_COMMAND_TYPE_IMAGE")
+    var CLAY_RENDER_COMMAND_TYPE_IMAGE;
+
+    @:native("Clay_RenderCommandType::CLAY_RENDER_COMMAND_TYPE_SCISSOR_START")
+    var CLAY_RENDER_COMMAND_TYPE_SCISSOR_START;
+
+    @:native("Clay_RenderCommandType::CLAY_RENDER_COMMAND_TYPE_SCISSOR_END")
+    var CLAY_RENDER_COMMAND_TYPE_SCISSOR_END;
+
+    @:native("Clay_RenderCommandType::CLAY_RENDER_COMMAND_TYPE_CUSTOM")
+    var CLAY_RENDER_COMMAND_TYPE_CUSTOM;
+}
+@:unreflective
+@:native('Clay_RenderCommandType')
+@:lincCppiaDef('HxClay_RenderCommandType', 'enum')
+extern class Native_Clay_RenderCommandTypeImpl { }
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapEnumExtern('Native_Clay_RenderCommandType'))
+    enum abstract HxClay_RenderCommandType(Int) from Int to Int {}
+#else
+    typedef HxClay_RenderCommandType = Native_Clay_RenderCommandType;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_RenderCommand")
+@:lincCppiaDef('HxClay_RenderCommand', 'struct')
+extern class Native_Clay_RenderCommand {
+    public function new();
+    public var boundingBox:Native_Clay_BoundingBox;
+    public var renderData:Native_Clay_RenderData;
+    public var userData:cpp.Star<cpp.Void>;
+    public var id:cpp.UInt32;
+    public var zIndex:cpp.UInt16;
+    public var commandType:Native_Clay_RenderCommandType;
+
+    @:lincCppiaIgnore
+    inline public function cmp(_v:Native_Clay_RenderCommand):Int
+        return untyped __cpp__('memcmp(&{0}, &{1}, sizeof(Clay_RenderCommand))', this, _v);
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_RenderCommand'))
+    class HxClay_RenderCommand {
+        public function cmp(_v:HxClay_RenderCommand):Int
+            return untyped __cpp__('memcmp(&{0}.value, &{1}, sizeof(Clay_RenderCommand))', __inst, _v.__inst);
+    }
+#else
+    typedef HxClay_RenderCommand = Native_Clay_RenderCommand;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_RenderCommandArray")
+@:lincCppiaDef('HxClay_RenderCommandArray', 'struct')
+extern class Native_Clay_RenderCommandArray {
+    public function new();
+    public var capacity:cpp.UInt32;
+    public var length:cpp.UInt32;
+    @:lincCppiaIgnore 
+    public var internalArray:cpp.RawPointer<Native_Clay_RenderCommand>;
+
+    @:lincCppiaIgnore 
+    inline public function get(_idx:Int):Native_Clay_RenderCommand {
+        return internalArray[_idx];
+    }
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_RenderCommandArray', true))
+    class HxClay_RenderCommandArray {
+        public var internalArray(get,never):cpp.Pointer<Native_Clay_RenderCommand>;
+        function get_internalArray() {
+            if ((this.__ptr != null)) return cast this.__ptr.get_ref().internalArray else return cast this.__inst.internalArray;
+        }
+
+        public function get(_idx:Int):HxClay_RenderCommand {
+            var res = Type.createEmptyInstance(HxClay_RenderCommand);
+            if (this.__ptr != null) 
+                res.__inst = this.__ptr.get_ref().get(_idx);
+            else 
+                res.__inst = this.__inst.get(_idx);
+            return res;
+        }
+    }
+#else
+    typedef HxClay_RenderCommandArray = Native_Clay_RenderCommandArray;
+#end
+
+//
+@:unreflective
+extern enum abstract Native_Clay_PointerDataInteractionState(Native_Clay_PointerDataInteractionStateImpl) {
+    @:native("Clay_PointerDataInteractionState::CLAY_POINTER_DATA_PRESSED_THIS_FRAME")
+    var CLAY_POINTER_DATA_PRESSED_THIS_FRAME;
+    
+    @:native("Clay_PointerDataInteractionState::CLAY_POINTER_DATA_PRESSED")
+    var CLAY_POINTER_DATA_PRESSED;
+
+    @:native("Clay_PointerDataInteractionState::CLAY_POINTER_DATA_RELEASED_THIS_FRAME")
+    var CLAY_POINTER_DATA_RELEASED_THIS_FRAME;
+
+    @:native("Clay_PointerDataInteractionState::CLAY_POINTER_DATA_RELEASED")
+    var CLAY_POINTER_DATA_RELEASED;
+}
+@:unreflective
+@:native('Clay_PointerDataInteractionState')
+@:lincCppiaDef('HxClay_PointerDataInteractionState', 'enum')
+extern class Native_Clay_PointerDataInteractionStateImpl { }
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapEnumExtern('Native_Clay_PointerDataInteractionState'))
+    enum abstract HxClay_PointerDataInteractionState(Int) from Int to Int {}
+#else
+    typedef HxClay_PointerDataInteractionState = Native_Clay_PointerDataInteractionState;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
+@:native("Clay_PointerData")
+@:lincCppiaDef('HxClay_PointerData', 'struct')
+extern class Native_Clay_PointerData {
+    public function new();
+    public var position:Native_Clay_Vector2;
+    public var state:Native_Clay_PointerDataInteractionState;
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_PointerData'))
+    class HxClay_PointerData {}
+#else
+    typedef HxClay_PointerData = Native_Clay_PointerData;
+#end
 
 
-///////////////////////////////////////////////////////////
+
+
 
 
 
@@ -763,11 +1086,120 @@ extern class Native_Clay_RenderData {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
+@:native("Clay_ElementDeclaration")
+@:lincCppiaDef('HxClay_ElementDeclaration', 'struct')
+extern class Native_Clay_ElementDeclaration {
+    public function new();
+    public var id:Native_Clay_ElementId;
+    public var layout:Native_Clay_LayoutConfig;
+    public var backgroundColor:Native_Clay_Color;
+    public var cornerRadius:Native_Clay_CornerRadius;
+    public var image:Native_Clay_ImageElementConfig;
+    public var floating:Native_Clay_FloatingElementConfig;
+    // public var custom:Native_Clay_CustomElementConfig;
+    public var scroll:Native_Clay_ScrollElementConfig;
+    public var border:Native_Clay_BorderElementConfig;
+    public var userData:cpp.Star<cpp.Void>;
+
+    @:lincCppiaIgnore
+    inline public function layout_sizing_width(_v:Native_Clay_SizingAxis)
+        layout.sizing.width = _v;
+
+    @:lincCppiaIgnore
+    inline public function layout_sizing_height(_v:Native_Clay_SizingAxis)
+        layout.sizing.height = _v;
+
+    @:lincCppiaIgnore
+    inline public function layout_direction(_v:Native_Clay_LayoutDirection)
+        layout.layoutDirection = _v;
+
+    @:lincCppiaIgnore
+    inline public function print():String {
+        var buf = new StringBuf();
+        buf.add('id: ${id.id}, ${id.offset}, ${id.baseId}, ${id.stringId.chars}\n');
+        buf.add('layout: ${layout.sizing.width.percent}, ${layout.sizing.height.percent}');
+        return buf.toString();
+    }
+}
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapStructExtern('Native_Clay_ElementDeclaration'))
+    class HxClay_ElementDeclaration {
+
+        public function layout_sizing_width(_v:HxClay_SizingAxis)
+            untyped __cpp__('{0}.value.layout.sizing.width = {1}', __inst, _v.__inst);
+
+        public function layout_sizing_height(_v:HxClay_SizingAxis)
+            untyped __cpp__('{0}.value.layout.sizing.height = {1}', __inst, _v.__inst);
+
+        public function layout_direction(_v:HxClay_LayoutDirection)
+            untyped __cpp__('{0}.value.layout.layoutDirection = (Clay_LayoutDirection){1}', __inst, _v);
+
+        public function print():String {
+            return __inst.print();
+        }
+    }
+#else
+    typedef HxClay_ElementDeclaration = Native_Clay_ElementDeclaration;
+#end
+
+
+
+
+
+
+
+
+
+
+//
+@:unreflective
+extern enum abstract Native_Clay_ErrorType(Native_Clay_ErrorTypeImpl) {
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_TEXT_MEASUREMENT_FUNCTION_NOT_PROVIDED")
+    var CLAY_ERROR_TYPE_TEXT_MEASUREMENT_FUNCTION_NOT_PROVIDED;
+    
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_ARENA_CAPACITY_EXCEEDED")
+    var CLAY_ERROR_TYPE_ARENA_CAPACITY_EXCEEDED;
+
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_ELEMENTS_CAPACITY_EXCEEDED")
+    var CLAY_ERROR_TYPE_ELEMENTS_CAPACITY_EXCEEDED;
+
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_TEXT_MEASUREMENT_CAPACITY_EXCEEDED")
+    var CLAY_ERROR_TYPE_TEXT_MEASUREMENT_CAPACITY_EXCEEDED;
+
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_DUPLICATE_ID")
+    var CLAY_ERROR_TYPE_DUPLICATE_ID;
+
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_FLOATING_CONTAINER_PARENT_NOT_FOUND")
+    var CLAY_ERROR_TYPE_FLOATING_CONTAINER_PARENT_NOT_FOUND;
+
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_PERCENTAGE_OVER_1")
+    var CLAY_ERROR_TYPE_PERCENTAGE_OVER_1;
+
+    @:native("Clay_ErrorType::CLAY_ERROR_TYPE_INTERNAL_ERROR")
+    var CLAY_ERROR_TYPE_INTERNAL_ERROR;
+}
+@:unreflective
+@:native('Clay_ErrorType')
+@:lincCppiaDef('HxClay_ErrorType', 'enum')
+extern class Native_Clay_ErrorTypeImpl { }
+#if (scriptable || cppia)
+    @:build(linc.LincCppia.wrapEnumExtern('Native_Clay_ErrorType'))
+    enum abstract HxClay_ErrorType(Int) from Int to Int {}
+#else
+    typedef HxClay_ErrorType = Native_Clay_ErrorType;
+#end
+
+//
+@:include("clay.h")
+@:structAccess
+@:unreflective
+@:semantics(reference)
 @:native("Clay_ErrorData")
 @:lincCppiaDef('HxClay_ErrorData', 'struct')
 extern class Native_Clay_ErrorData {
     public function new();
-    // public var errorType:Int;
+    public var errorType:Native_Clay_ErrorType;
     public var errorText:Native_Clay_String;
 }
 #if (scriptable || cppia)
@@ -781,6 +1213,7 @@ extern class Native_Clay_ErrorData {
 @:include("clay.h")
 @:structAccess
 @:unreflective
+@:semantics(reference)
 @:native("Clay_ErrorHandler")
 @:lincCppiaDef('HxClay_ErrorHandler', 'struct')
 extern class Native_Clay_ErrorHandler {
@@ -795,35 +1228,6 @@ extern class Native_Clay_ErrorHandler {
     typedef HxClay_ErrorHandler = Native_Clay_ErrorHandler;
 #end
 
-
-
-
-
-
-
-
-
-
-
-// //
-// @:include("clay.h")
-// @:structAccess
-// @:unreflective
-// @:native("Clay_RenderCommand")
-// @:lincCppiaDef('HxClay_RenderCommand', 'struct')
-// extern class Native_Clay_RenderCommand {
-//     public function new();
-//     public var width:cpp.Float32;
-//     public var height:cpp.Float32;
-// }
-// #if (scriptable || cppia)
-//     @:build(linc.LincCppia.wrapStructExtern('Native_Clay_RenderCommand'))
-//     class HxClay_RenderCommand {}
-// #else
-//     typedef HxClay_RenderCommand = Native_Clay_RenderCommand;
-// #end
-
-
 //
 @:keep
 @:include('linc_clay.h')
@@ -833,20 +1237,51 @@ extern class Native_Clay_ErrorHandler {
 #end
 extern class Native_Clay {
 
+    inline public static function ID(_str:String, ?_id:Int = 0):Native_Clay_ElementId {
+        final str = Native_Clay_String.fromString(_str);
+        return untyped __cpp__('Clay__HashString({0}, {1}, 0)', str, _id);
+    }
+
+    inline public static function SIZING_GROW(_val:cpp.Float32):Native_Clay_SizingAxis
+        return untyped __cpp__('{ .size = { .minMax = { {0}, {0} } }, .type = CLAY__SIZING_TYPE_GROW }', _val);
+
+    inline public static function SIZING_FIXED(_val:cpp.Float32):Native_Clay_SizingAxis
+        return untyped __cpp__('{ .size = { .minMax = { {0}, {0} } }, .type = CLAY__SIZING_TYPE_FIXED }', _val);
+
+    inline public static function SIZING_PERCENT(_val:cpp.Float32):Native_Clay_SizingAxis
+        return untyped __cpp__('{ .size = { .percent = ({0}) }, .type = CLAY__SIZING_TYPE_PERCENT }', _val);
+
+
+
     @:native('::linc::clay::createArena')
-    extern public static function createArena():Native_Clay_Arena;
+    public static function createArena():Native_Clay_Arena;
 
     @:native('::linc::clay::destroyArena')
-    extern public static function destroyArena(_arena:Native_Clay_Arena):Void;
+    public static function destroyArena(_arena:Native_Clay_Arena):Void;
 
-    @:native("::Clay_Initialize")
-    extern public static function initialize(_arena:Native_Clay_Arena, _dimensions:Native_Clay_Dimensions, _errorHandler:Native_Clay_ErrorHandler):cpp.Star<Native_Clay_Context>;
+    @:native('::Clay_Initialize')
+    public static function initialize(_arena:Native_Clay_Arena, _dimensions:Native_Clay_Dimensions, _errorHandler:Native_Clay_ErrorHandler):cpp.Star<Native_Clay_Context>;
 
-    @:native("::Clay_BeginLayout")
-    extern public static function beginLayout():Void;
+    @:native('::Clay_SetCurrentContext')
+    public static function setCurrentContext(_context:HxClay_ContextPtr):Void;
 
-    // @:native("::Clay_EndLayout")
-    // extern public static function endLayout():Native_Clay_RenderCommandArray;
+    @:native('::Clay_SetLayoutDimensions')
+    public static function setLayoutDimensions(_dims:Native_Clay_Dimensions):Void;
+
+    @:native('::Clay_BeginLayout')
+    public static function beginLayout():Void;
+
+    @:native('::Clay__OpenElement')
+    public static function openElement():Void;
+
+    @:native('::Clay__ConfigureOpenElement')
+    public static function configureElement(_cfg:Native_Clay_ElementDeclaration):Void;
+
+    @:native('::Clay__CloseElement')
+    public static function closeElement():Void;
+
+    @:native('::Clay_EndLayout')
+    public static function endLayout():Native_Clay_RenderCommandArray;
 
     inline public static function createErrorHandler():Native_Clay_ErrorHandler {
         var eh = new Native_Clay_ErrorHandler();
